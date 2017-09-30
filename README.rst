@@ -45,7 +45,7 @@ Usage Example
                    'y': (0x20, 0x20, 0x00),
                    'Y': (0xFF, 0xFF, 0x00)}
 
-wing.display_coloured_image(xmas, xmas_colours)
+   wing.display_coloured_image(xmas, xmas_colours)
 ```
 
 Contributing
