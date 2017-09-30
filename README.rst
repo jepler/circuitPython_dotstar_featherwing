@@ -26,23 +26,23 @@ This is easily achieved by downloading
 Usage Example
 =============
 
-```
-import board
-import dotstar_featherwing
-wing = dotstar_featherwing.DotstarFeatherwing(board.D13, board.D11)
-
-xmas = ["..y.w......w",
-        "..G.....w...",
-        "..G..w....w.",
-        ".GGG...w....",
-        "GGGGG.......",
-        "wwwwwwwwwwww"]
-
-xmas_colours = {'w': (0x20, 0x20, 0x20),
-                'W': (0xFF, 0xFF, 0xFF),
-                'G': (0x00, 0x20, 0x00),
-                'y': (0x20, 0x20, 0x00),
-                'Y': (0xFF, 0xFF, 0x00)}
+.. code-block:: python
+   import board
+   import dotstar_featherwing
+   wing = dotstar_featherwing.DotstarFeatherwing(board.D13, board.D11)
+   
+   xmas = ["..y.w......w",
+           "..G.....w...",
+           "..G..w....w.",
+           ".GGG...w....",
+           "GGGGG.......",
+           "wwwwwwwwwwww"]
+   
+   xmas_colours = {'w': (0x20, 0x20, 0x20),
+                   'W': (0xFF, 0xFF, 0xFF),
+                   'G': (0x00, 0x20, 0x00),
+                   'y': (0x20, 0x20, 0x00),
+                   'Y': (0xFF, 0xFF, 0x00)}
 
 wing.display_coloured_image(xmas, xmas_colours)
 ```
