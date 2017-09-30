@@ -46,7 +46,6 @@ Usage Example
                    'Y': (0xFF, 0xFF, 0x00)}
 
    wing.display_coloured_image(xmas, xmas_colours)
-```
 
 Contributing
 ============
