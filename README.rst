@@ -27,6 +27,7 @@ Usage Example
 =============
 
 .. code-block:: python
+				
    import board
    import dotstar_featherwing
    wing = dotstar_featherwing.DotstarFeatherwing(board.D13, board.D11)
