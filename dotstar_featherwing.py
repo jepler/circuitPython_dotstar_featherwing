@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2017 Dave Astels for ZombieWizard
+# Copyright (c) 2017 Dave Astels
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,208 +34,184 @@ import time
 
 class DotstarFeatherwing:
 	"""Test, Image, and Animation support for the DotStar featherwing"""
-	
-    blank_stripe = [(0, 0, 0),
-                    (0, 0, 0),
-                    (0, 0, 0),
-                    (0, 0, 0),
-                    (0, 0, 0),
-                    (0, 0, 0)]
+
+	blank_stripe = [(0, 0, 0),
+					(0, 0, 0),
+					(0, 0, 0),
+					(0, 0, 0),
+					(0, 0, 0),
+					(0, 0, 0)]
 	"""A blank stripe, used internally to separate characters as they are shifted onto the display."""
-    
-    font_3 = {' ': [ 0,  0,  0],
-              'A': [62, 05, 62],
-              'B': [63, 37, 26],
-              'C': [30, 33, 18],
-              'D': [63, 33, 30],
-              'E': [63, 37, 33],
-              'F': [63,  5,  1],
-              'G': [30, 41, 26],
-              'H': [63,  4, 63],
-              'I': [33, 63, 33],
-              'J': [33, 31,  1],
-              'K': [63,  4, 59],
-              'L': [63, 32, 32],
-              'M': [63,  2, 63],
-              'N': [63, 12, 63],
-              'O': [30, 33, 30],
-              'P': [63,  5,  2],
-              'Q': [30, 33, 62],
-              'R': [63,  5, 58],
-              'S': [18, 37, 26],
-              'T': [ 1, 63,  1],
-              'U': [31, 32, 63],
-              'V': [31, 32, 31],
-              'W': [63, 16, 63],
-              'X': [59,  4, 59],
-              'Y': [ 3, 60,  3],
-              'Z': [49, 45, 35],
-              '0': [30, 33, 30],
-              '1': [34, 63, 32],
-              '2': [50, 41, 38],
-              '3': [33, 37, 26],
-              '4': [ 7,  4, 63],
-              '5': [23, 37, 25],
-              '6': [30, 41, 25],
-              '7': [49,  9,  7],
-              '8': [26, 37, 26],
-              '9': [38, 41, 30],
-              '!': [ 0, 47,  0],
-              '?': [ 2, 41,  6],
-              '.': [ 0, 32,  0],
-              '-': [ 8,  8,  8],
-              '_': [32, 32, 32],
-              '+': [ 8, 28,  8],
-              '/': [48,  12,  3],
-              '*': [20,  8, 20],
-              '=': [20, 20, 20],
-              'UNKNOWN': [63, 33, 63] }
-	"""A sample font that uses 3 pixel wide characters."""
-
-
-    def __init__(self, clock, data, brightness=1.0):
+	
+	def __init__(self, clock, data, brightness=1.0):
 		"""Create an interface for the display.
 
 		   :param pin clock: The clock pin for the featherwing
 		   :param pin data: The data pin for the featherwing
 		   :param float brightness: Optional brightness (0.0-1.0) that defaults to 1.0
 		"""
-        self.rows = 6
-        self.columns = 12
-        self.display = adafruit_dotstar.DotStar(clock, data, self.rows * self.columns, brightness, False)
-              
+		self.rows = 6
+		self.columns = 12
+		self.display = adafruit_dotstar.DotStar(clock, data, self.rows * self.columns, brightness, False)
+			  
 
+	def clear(self):
+		"""Clear the display.
+		   Does NOT update the LEDs
+		"""
+		self.display.fill((0,0,0))
+
+
+	def fill(self, color):
+		"""Fills the wing with a color.
+		   Does NOT update the LEDs.
+
+		   :param (int, int, int) color: the color to fill with
+		"""
+		self.display.fill(color)
+
+
+	def show(self):
+		"""Update the LEDs.
+		"""
+		self.display.show()
+
+
+	def set_color(self, row, column, color):
+		"""Set the color of the specified pixel.
+
+		   :param int row: The row (0-5) of the pixel to set
+		   :param int column: The column (0-11) of the pixel to set
+		   :param (int, int, int) color: The color to set the pixel to
+		"""
+		self.display[row * self.columns + column] = color
+		
+		
 	def shift_into_left(self, stripe):
 		""" Shift a column of pixels into the left side of the display.
 
-		    :param [int] stripe: A column of pixel colours
+			:param [(int, int, int)] stripe: A column of pixel colors
 		"""
-        for r in range(self.rows):
-            rightmost = r * self.columns
-            for c in range(self.columns - 1):
-                self.display[rightmost + c] = self.display[rightmost + c + 1]
-            self.display[rightmost + self.columns - 1] = stripe[r]
-        self.display.show()
+		for r in range(self.rows):
+			rightmost = r * self.columns
+			for c in range(self.columns - 1):
+				self.display[rightmost + c] = self.display[rightmost + c + 1]
+			self.display[rightmost + self.columns - 1] = stripe[r]
+		self.display.show()
 
 
-    def shift_into_right(self, stripe):
+	def shift_into_right(self, stripe):
 		""" Shift a column of pixels into the rightside of the display.
 
-		    :param [int] stripe: A column of pixel colours
+			:param [(int, int, int)] stripe: A column of pixel colors
 		"""
-        for r in range(self.rows):
-            leftmost = ((r + 1) * self.columns) - 1
-            for c in range(self.columns - 1):
-                self.display[leftmost - c] = self.display[(leftmost - c) -1]
-            self.display[(leftmost - self.columns) + 1] = stripe[r]
-        self.display.show()
-                
+		for r in range(self.rows):
+			leftmost = ((r + 1) * self.columns) - 1
+			for c in range(self.columns - 1):
+				self.display[leftmost - c] = self.display[(leftmost - c) -1]
+			self.display[(leftmost - self.columns) + 1] = stripe[r]
+		self.display.show()
+				
 
-    def number_to_pixels(self, x, colour):
+	def number_to_pixels(self, x, color):
 		"""Convert an integer (0..63) into an array of 6 pixels.
 
 		   :param int x: integer to convert into binary pixel values; LSB is topmost.
-		   :param (int) colour: the colour to set "on" pixels to
+		   :param (int, int, int) color: the color to set "on" pixels to
 		"""
-        val = x
-        pixels = []
-        for b in range(self.rows):
-            if val & 1 == 0:
-                pixels.append((0, 0, 0))
-            else:
-                pixels.append(colour)
-            val = val >> 1
-        return pixels
-            
+		val = x
+		pixels = []
+		for b in range(self.rows):
+			if val & 1 == 0:
+				pixels.append((0, 0, 0))
+			else:
+				pixels.append(color)
+			val = val >> 1
+		return pixels
+			
 
-    def character_to_numbers(self, font, char):
+	def character_to_numbers(self, font, char):
 		"""Convert a letter to the sequence of column values to display.
 
 		   :param {char -> [int]} font: the font to use to convert characters to glyphs
 		   :param char letter: the char to convert
 		"""
-        return font[letter]
+		return font[char]
 
 
-    def clear(self):
-		"""Clear the display.
-		   Does NOT update the LEDs
-		"""
-        self.display.fill((0,0,0))
-
-        
-    def shift_in_character(self, font, c, colour=(0x00, 0x40, 0x00), delay=0.2):
+	def shift_in_character(self, font, c, color=(0x00, 0x40, 0x00), delay=0.2):
 		"""Shifts a single character onto the display from the right edge.
 
 		   :param {char -> [int]} font: the font to use to convert characters to glyphs
 		   :param char c: the char to convert
-		   :param (int) colour: the color to use for each pixel turned on
+		   :param (int, int, int) color: the color to use for each pixel turned on
 		   :param float delay: the time to wait between shifting in columns
 		"""
 		if c.upper() in font:
-            matrix = self.character_to_numbers(font, c.upper())
-        else:
-            matrix = self.character_to_numbers(font, 'UNKNOWN')
-        for stripe in matrix:
-            self.shift_into_right(self.number_to_pixels(stripe, colour))
+			matrix = self.character_to_numbers(font, c.upper())
+		else:
+			matrix = self.character_to_numbers(font, 'UNKNOWN')
+		for stripe in matrix:
+			self.shift_into_right(self.number_to_pixels(stripe, color))
 			time.sleep(delay)
-        self.shift_into_right(self.blank_stripe)
+		self.shift_into_right(self.blank_stripe)
 		time.sleep(delay)
 
 
-	def shift_in_string(self, font, s, colour=(0x00, 0x40, 0x00), delay=0.2):
+	def shift_in_string(self, font, s, color=(0x00, 0x40, 0x00), delay=0.2):
 		"""Shifts a string onto the display from the right edge.
 
 		   :param {char -> [int]} font: the font to use to convert characters to glyphs
 		   :param string s: the char to convert
-		   :param (int) colour: the color to use for each pixel turned on
+		   :param (int, int, int)) color: the color to use for each pixel turned on
 		   :param float delay: the time to wait between shifting in columns
 		"""
-        for c in s:
-            self.shift_in_character(font, c, colour, delay)
+		for c in s:
+			self.shift_in_character(font, c, color, delay)
 
-        
-    # Display an image
-    def display_image(self, image, colour):
-		"""Display an mono-coloured image.
+		
+	# Display an image
+	def display_image(self, image, color):
+		"""Display an mono-colored image.
 
 		   :param [string] image: the textual bitmap, 'X' for set pixels, anything else for others
-		   :param (int) colour: the colour to set "on" pixels to
+		   :param (int) color: the color to set "on" pixels to
 		"""
-        self.display_coloured_image(image, {'X': colour})
-                            
+		self.display_colored_image(image, {'X': color})
+							
 
-    def display_coloured_image(self, image, colours):
-		"""Display an multi-coloured image.
+	def display_colored_image(self, image, colors):
+		"""Display an multi-colored image.
 
-		   :param [string] image: the textual bitmap, character are looked up in colours for the 
-		          corresponding pixel colour, anything not in the map is off
-		   :param {char -> [int]} colours: a map of characters in the image data to colours to use
+		   :param [string] image: the textual bitmap, character are looked up in colors for the 
+				  corresponding pixel color, anything not in the map is off
+		   :param {char -> (int, int, int)} colors: a map of characters in the image data to colors to use
 		"""
-        for r in range(self.rows):
-            for c in range(self.columns):
-                index = r * self.columns + ((self.columns - 1) - c)
-                key = image[r][c]
-                if key in colours:
-                    self.display[index] = colours[key]
-                else:
-                    self.display[index] = (0, 0, 0)
-        self.display.show()
-                            
+		for r in range(self.rows):
+			for c in range(self.columns):
+				index = r * self.columns + ((self.columns - 1) - c)
+				key = image[r][c]
+				if key in colors:
+					self.display[index] = colors[key]
+				else:
+					self.display[index] = (0, 0, 0)
+		self.display.show()
+							
 
-    def display_animation(self, animation, colours, delay=0.1):
-		"""Display a multi-coloured animation.
+	def display_animation(self, animation, colors, count=1, delay=0.1):
+		"""Display a multi-colored animation.
 
-		   :param [[string]] animation: a list of textual bitmaps, each as described in display_coloured_image
-		   :param {char -> [int]} colours: a map of characters in the image data to colours to use
+		   :param [[string]] animation: a list of textual bitmaps, each as described in display_colored_image
+		   :param {char -> (int, int, int)} colors: a map of characters in the image data to colors to use
 		   :param float delay: the amount of time (seconds) to wait between frames
 		"""
-        self.clear()
-        while True:
-            for frame in animation:
-                self.display_coloured_image(frame, colours)
-                time.sleep(delay)
-                    
+		self.clear()
+		while count > 0:
+			for frame in animation:
+				self.display_colored_image(frame, colors)
+				time.sleep(delay)
+			count = count - 1
+					
 
 
 
