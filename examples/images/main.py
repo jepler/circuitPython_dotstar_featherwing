@@ -22,13 +22,13 @@ xmas = ["..y.w......w",
         "GGGGG.......",
         "wwwwwwwwwwww"]
 
-xmas_colours = {'w': (0x20, 0x20, 0x20),
+xmas_colors = {'w': (0x20, 0x20, 0x20),
                 'W': (0xFF, 0xFF, 0xFF),
                 'G': (0x00, 0x20, 0x00),
                 'y': (0x20, 0x20, 0x00),
                 'Y': (0xFF, 0xFF, 0x00)}
 
-wing.display_coloured_image(xmas, xmas_colours)
+wing.display_colored_image(xmas, xmas_colors)
 
 time.sleep(5)
 
@@ -64,5 +64,6 @@ xmas_animation = [["..y.w......w",
                    "GGGGG......W",
                    "wwwwwwwwwwww"]]
 
-wing.display_animation(xmas_animation, xmas_colours, 0.05)
+while True:
+	wing.display_animation(xmas_animation, xmas_colors, 10, 0.05)
                   
