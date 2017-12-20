@@ -1,37 +1,13 @@
 import board
 import dotstar_featherwing
-import time
-
 
 wing = dotstar_featherwing.DotstarFeatherwing(board.D13, board.D11)
-starfleet = ["XXXXXXX.....",
-             "..XXXXXXX...",
-             "....XXXXXXX.",
-             ".....XXXXXXX",
-             "....XXXXXXX.",
-             "..XXXXXXX..."]
 
-wing.display_image(starfleet, (0x20, 0x20, 0x00))
-
-time.sleep(5)
-
-xmas = ["..y.w......w",
-        "..G.....w...",
-        "..G..w....w.",
-        ".GGG...w....",
-        "GGGGG.......",
-        "wwwwwwwwwwww"]
-
-xmas_colors = {'w': (0x20, 0x20, 0x20),
-                'W': (0xFF, 0xFF, 0xFF),
-                'G': (0x00, 0x20, 0x00),
-                'y': (0x20, 0x20, 0x00),
-                'Y': (0xFF, 0xFF, 0x00)}
-
-wing.display_colored_image(xmas, xmas_colors)
-
-time.sleep(5)
-
+xmas_colors = {'w': ( 32,  32,  32),
+                'W': (255, 255, 255),
+                'G': (  0,  32,   0),
+                'y': ( 32,  32,   0),
+                'Y': (255, 255,   0)}
 
 xmas_animation = [["..y.w......w",
                    "..G.....w...",
@@ -64,6 +40,4 @@ xmas_animation = [["..y.w......w",
                    "GGGGG......W",
                    "wwwwwwwwwwww"]]
 
-while True:
-	wing.display_animation(xmas_animation, xmas_colors, 10, 0.05)
-                  
+wing.display_animation(xmas_animation, xmas_colors, 10, 0.05)
