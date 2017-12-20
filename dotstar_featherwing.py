@@ -32,7 +32,7 @@ import board
 import adafruit_dotstar
 import time
 
-class DotstarFeatherwing:
+class DotstarFeatherwing(object):
 	"""Test, Image, and Animation support for the DotStar featherwing"""
 
 	blank_stripe = [(0, 0, 0),
@@ -90,27 +90,25 @@ class DotstarFeatherwing:
 	def shift_into_left(self, stripe):
 		""" Shift a column of pixels into the left side of the display.
 
-			:param [(int, int, int)] stripe: A column of pixel colors
+			:param [(int, int, int)] stripe: A column of pixel colors. The first at the top.
 		"""
 		for r in range(self.rows):
 			rightmost = r * self.columns
 			for c in range(self.columns - 1):
 				self.display[rightmost + c] = self.display[rightmost + c + 1]
 			self.display[rightmost + self.columns - 1] = stripe[r]
-		self.display.show()
 
 
 	def shift_into_right(self, stripe):
 		""" Shift a column of pixels into the rightside of the display.
 
-			:param [(int, int, int)] stripe: A column of pixel colors
+			:param [(int, int, int)] stripe: A column of pixel colors. The first at the top.
 		"""
 		for r in range(self.rows):
 			leftmost = ((r + 1) * self.columns) - 1
 			for c in range(self.columns - 1):
 				self.display[leftmost - c] = self.display[(leftmost - c) -1]
 			self.display[(leftmost - self.columns) + 1] = stripe[r]
-		self.display.show()
 				
 
 	def number_to_pixels(self, x, color):
@@ -153,8 +151,10 @@ class DotstarFeatherwing:
 			matrix = self.character_to_numbers(font, 'UNKNOWN')
 		for stripe in matrix:
 			self.shift_into_right(self.number_to_pixels(stripe, color))
+			self.show()
 			time.sleep(delay)
 		self.shift_into_right(self.blank_stripe)
+		self.show()
 		time.sleep(delay)
 
 
@@ -203,13 +203,17 @@ class DotstarFeatherwing:
 
 		   :param [[string]] animation: a list of textual bitmaps, each as described in display_colored_image
 		   :param {char -> (int, int, int)} colors: a map of characters in the image data to colors to use
+		   :param int count: the number of times to play the animation
 		   :param float delay: the amount of time (seconds) to wait between frames
 		"""
 		self.clear()
+		first_frame = True
 		while count > 0:
 			for frame in animation:
+				if not first_frame:
+					time.sleep(delay)
+				first_frame = False
 				self.display_colored_image(frame, colors)
-				time.sleep(delay)
 			count = count - 1
 					
 
