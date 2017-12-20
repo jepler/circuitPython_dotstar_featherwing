@@ -9,4 +9,5 @@ while True:
     wing.clear()
     for x in range(64):
         wing.shift_into_right(wing.number_to_pixels(x, (64, 0, 0)))
+		wing.show()
         time.sleep(0.2)
