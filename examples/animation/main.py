@@ -40,4 +40,4 @@ xmas_animation = [["..y.w......w",
                    "GGGGG......W",
                    "wwwwwwwwwwww"]]
 
-wing.display_animation(xmas_animation, xmas_colors, 10, 0.05)
+wing.display_animation(xmas_animation, xmas_colors, 10000, 0.05)
