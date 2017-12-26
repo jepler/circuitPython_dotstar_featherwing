@@ -32,7 +32,7 @@ import board
 import adafruit_dotstar
 import time
 
-class DotstarFeatherwing(object):
+class DotstarFeatherwing:
 	"""Test, Image, and Animation support for the DotStar featherwing"""
 
 	blank_stripe = [(0, 0, 0),
@@ -99,7 +99,7 @@ class DotstarFeatherwing(object):
 			self.display[rightmost + self.columns - 1] = stripe[r]
 
 
-	def shift_into_right(self, stripe):
+ 	def shift_into_right(self, stripe):
 		""" Shift a column of pixels into the rightside of the display.
 
 			:param [(int, int, int)] stripe: A column of pixel colors. The first at the top.
@@ -107,11 +107,24 @@ class DotstarFeatherwing(object):
 		for r in range(self.rows):
 			leftmost = ((r + 1) * self.columns) - 1
 			for c in range(self.columns - 1):
-				self.display[leftmost - c] = self.display[(leftmost - c) -1]
+				self.display[leftmost - c] = self.display[(leftmost - c) - 1]
 			self.display[(leftmost - self.columns) + 1] = stripe[r]
 				
 
-	def number_to_pixels(self, x, color):
+ 	def shift_into_top(self, stripe, offset=0):
+		""" Shift a column of pixels into the rightside of the display.
+
+			:param [(int, int, int)] stripe: A column of pixel colors. The first at the top.
+		    :param int offset: The offset into stripe of the first pixel value to take.
+		"""
+		for c in range(self.columns):
+			bottommost = (self.rows - 1) * self.columns
+			for r in range(self.rows - 1):
+				self.display[bottommost + c - (r  * self.columns)] = self.display[bottommost + c - ((r + 1) * self.columns)]
+			self.display[c] = stripe[c + offset]
+				
+
+	def number_to_pixels(self, x, color, bit_count=6):
 		"""Convert an integer (0..63) into an array of 6 pixels.
 
 		   :param int x: integer to convert into binary pixel values; LSB is topmost.
@@ -119,7 +132,7 @@ class DotstarFeatherwing(object):
 		"""
 		val = x
 		pixels = []
-		for b in range(self.rows):
+		for b in range(bit_count):
 			if val & 1 == 0:
 				pixels.append((0, 0, 0))
 			else:
