@@ -14,7 +14,11 @@ background = (32, 8, 0)
 blue = (0, 0, 64)
 player = (0, 255, 0)
 
-row = (background, background, background, background, background, background, background, background, black, black, black, black, black, background, background, background, background, background, background, background, background)
+row = (background, background, background, background,
+       background, background, background, background,
+       black, black, black, black, black,
+       background, background, background, background,
+       background, background, background, background)
 
 
 def run():
@@ -47,7 +51,7 @@ def run():
     
         under_player = wing.get_color(3, player_position_col)
         if under_player == background:
-            return (steps, score)
+            return steps, score
         elif under_player == blue:
             score += 1
 
@@ -60,8 +64,8 @@ def run():
 
 while True:
     result = run()
+    # got here because of a crash, so report and restart
     print('Score: {} Steps: {}'.format(result[1], result[0]))
-    # got here becasue of a crash
     wing.clear()
     wing.show()
     wing.fill((255, 0, 0))
