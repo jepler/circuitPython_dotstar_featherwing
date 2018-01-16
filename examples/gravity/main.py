@@ -2,10 +2,11 @@
 # as used in https://learn.adafruit.com/animated-led-sand
 # Explainatory comments are used verbatim from that code.
 
-import board
-import busio
 import math
 import random
+
+import board
+import busio
 
 import adafruit_lsm303
 import adafruit_dotstar
@@ -18,10 +19,10 @@ MAX_FPS = 45  # Maximum redraw rate, frames/second
 GRAIN_COLOR = (64, 64, 64)
 MAX_X = WIDTH * 256 - 1
 MAX_Y = HEIGHT * 256 - 1
- 
+
 class Grain:
     def __init__(self):
-        x  = 0
+        x = 0
         y = 0
         vx = 0
         vy = 0
@@ -42,9 +43,9 @@ occupied_bits = [False for _ in range(WIDTH * HEIGHT)]
 
 def index_of_xy(x, y):
     return (y >> 8)  * WIDTH + (x >> 8)
-    
-def already_present(i, x, y):
-    for j in range(i):
+
+def already_present(limit, x, y):
+    for j in range(limit):
         if x == grains[j].x or y == grains[j].y:
             return True
     return False
@@ -58,13 +59,13 @@ for g in grains:
     occupied_bits[index_of_xy(g.x, g.y)] = True
     g.vx = 0
     g.vy = 0
-        
+
 while True:
     # Display frame rendered on prior pass.  It's done immediately after the
     # FPS sync (rather than after rendering) for consistent animation timing.
 
     for i in range(NUMBER_PIXELS):
-        wing[i] = GRAIN_COLOR if occupied_bits[i] else (0,0,0)
+        wing[i] = GRAIN_COLOR if occupied_bits[i] else (0, 0, 0)
     wing.show()
 
     # Read accelerometer...
@@ -125,7 +126,8 @@ while True:
 
         oldidx = index_of_xy(g.x, g.y)            # prior pixel
         newidx = index_of_xy(newx, newy)          # new pixel
-        if oldidx != newidx and occupied_bits[newidx]: # If grain is moving to a new pixel... but if that pixel is already occupied...
+        if oldidx != newidx and occupied_bits[newidx]: # If grain is moving to a new pixel...
+                                                       # but if that pixel is already occupied...
             delta = abs(newidx - oldidx)          # What direction when blocked?
             if delta == 1:                        # 1 pixel left or right
                 newx = g.x                        # cancel x motion
