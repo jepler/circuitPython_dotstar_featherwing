@@ -1,3 +1,7 @@
+# Ported from the C code by Phillip Burgess
+# as used in https://learn.adafruit.com/animated-led-sand
+# Explainatory comments are used verbatim from that code.
+
 import board
 import busio
 import math
