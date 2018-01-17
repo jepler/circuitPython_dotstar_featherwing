@@ -1,9 +1,36 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2018 Dave Astels
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+"""
+A gaunlet running game using the dotstar wing and the joy wing.
+"""
+
+import time
+import random
+
 import board
 import busio
 import dotstar_featherwing
 import Adafruit_seesaw
-import time
-import random
 
 i2c = busio.I2C(board.SCL, board.SDA)
 ss = Adafruit_seesaw.Seesaw(i2c)
@@ -22,6 +49,8 @@ row = (background, background, background, background,
 
 
 def run():
+    """Play the game."""
+
     player_position_col = 6
     score = 0
     steps = 0
@@ -48,7 +77,7 @@ def run():
         else:
             player_delta = 0
         player_position_col += player_delta
-    
+
         under_player = wing.get_color(3, player_position_col)
         if under_player == background:
             return steps, score
@@ -65,7 +94,7 @@ def run():
 while True:
     result = run()
     # got here because of a crash, so report and restart
-    print('Score: {} Steps: {}'.format(result[1], result[0]))
+    print 'Score: {} Steps: {}'.format(result[1], result[0])
     wing.clear()
     wing.show()
     wing.fill((255, 0, 0))
