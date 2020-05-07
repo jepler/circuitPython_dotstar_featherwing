@@ -32,17 +32,13 @@ import board
 import adafruit_dotstar
 import time
 
+
 class DotstarFeatherwing:
     """Test, Image, and Animation support for the DotStar featherwing"""
 
-    blank_stripe = [(0, 0, 0),
-                    (0, 0, 0),
-                    (0, 0, 0),
-                    (0, 0, 0),
-                    (0, 0, 0),
-                    (0, 0, 0)]
+    blank_stripe = [(0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)]
     """A blank stripe, used internally to separate characters as they are shifted onto the display."""
-    
+
     def __init__(self, clock, data, brightness=1.0):
         """Create an interface for the display.
 
@@ -52,15 +48,19 @@ class DotstarFeatherwing:
         """
         self.rows = 6
         self.columns = 12
-        self.display = adafruit_dotstar.DotStar(clock, data, self.rows * self.columns, brightness, False)
-              
+        self.display = adafruit_dotstar.DotStar(
+            clock,
+            data,
+            self.rows * self.columns,
+            brightness=brightness,
+            auto_write=False,
+        )
 
     def clear(self):
         """Clear the display.
            Does NOT update the LEDs
         """
-        self.display.fill((0,0,0))
-
+        self.display.fill((0, 0, 0))
 
     def fill(self, color):
         """Fills the wing with a color.
@@ -70,12 +70,10 @@ class DotstarFeatherwing:
         """
         self.display.fill(color)
 
-
     def show(self):
         """Update the LEDs.
         """
         self.display.show()
-
 
     def set_color(self, row, column, color):
         """Set the color of the specified pixel.
@@ -85,8 +83,7 @@ class DotstarFeatherwing:
            :param (int, int, int) color: The color to set the pixel to
         """
         self.display[row * self.columns + column] = color
-        
-        
+
     def get_color(self, row, column):
         """Get the color of the specified pixel. Returns teh color as an RGB tripple.
 
@@ -94,8 +91,7 @@ class DotstarFeatherwing:
            :param int column: The column (0-11) of the pixel to set
         """
         return self.display[row * self.columns + column]
-        
-        
+
     def shift_into_left(self, stripe):
         """ Shift a column of pixels into the left side of the display.
 
@@ -107,7 +103,6 @@ class DotstarFeatherwing:
                 self.display[rightmost + c] = self.display[rightmost + c + 1]
             self.display[rightmost + self.columns - 1] = stripe[r]
 
-
     def shift_into_right(self, stripe):
         """ Shift a column of pixels into the rightside of the display.
 
@@ -118,7 +113,6 @@ class DotstarFeatherwing:
             for c in range(self.columns - 1):
                 self.display[leftmost - c] = self.display[(leftmost - c) - 1]
             self.display[(leftmost - self.columns) + 1] = stripe[r]
-                
 
     def shift_into_top(self, stripe, offset=0):
         """ Shift a column of pixels into the rightside of the display.
@@ -129,9 +123,10 @@ class DotstarFeatherwing:
         for c in range(self.columns):
             bottommost = (self.rows - 1) * self.columns
             for r in range(self.rows - 1):
-                self.display[bottommost + c - (r  * self.columns)] = self.display[bottommost + c - ((r + 1) * self.columns)]
+                self.display[bottommost + c - (r * self.columns)] = self.display[
+                    bottommost + c - ((r + 1) * self.columns)
+                ]
             self.display[c] = stripe[c + offset]
-                
 
     def number_to_pixels(self, x, color, bit_count=6):
         """Convert an integer (0..63) into an array of 6 pixels.
@@ -148,7 +143,6 @@ class DotstarFeatherwing:
                 pixels.append(color)
             val = val >> 1
         return pixels
-            
 
     def character_to_numbers(self, font, char):
         """Convert a letter to the sequence of column values to display.
@@ -157,7 +151,6 @@ class DotstarFeatherwing:
            :param char letter: the char to convert
         """
         return font[char]
-
 
     def shift_in_character(self, font, c, color=(0x00, 0x40, 0x00), delay=0.2):
         """Shifts a single character onto the display from the right edge.
@@ -170,7 +163,7 @@ class DotstarFeatherwing:
         if c.upper() in font:
             matrix = self.character_to_numbers(font, c.upper())
         else:
-            matrix = self.character_to_numbers(font, 'UNKNOWN')
+            matrix = self.character_to_numbers(font, "UNKNOWN")
         for stripe in matrix:
             self.shift_into_right(self.number_to_pixels(stripe, color))
             self.show()
@@ -178,7 +171,6 @@ class DotstarFeatherwing:
         self.shift_into_right(self.blank_stripe)
         self.show()
         time.sleep(delay)
-
 
     def shift_in_string(self, font, s, color=(0x00, 0x40, 0x00), delay=0.2):
         """Shifts a string onto the display from the right edge.
@@ -191,7 +183,6 @@ class DotstarFeatherwing:
         for c in s:
             self.shift_in_character(font, c, color, delay)
 
-        
     # Display an image
     def display_image(self, image, color):
         """Display an mono-colored image.
@@ -199,13 +190,12 @@ class DotstarFeatherwing:
            :param [string] image: the textual bitmap, 'X' for set pixels, anything else for others
            :param (int) color: the color to set "on" pixels to
         """
-        self.display_colored_image(image, {'X': color})
-                            
+        self.display_colored_image(image, {"X": color})
 
     def display_colored_image(self, image, colors):
         """Display an multi-colored image.
 
-           :param [string] image: the textual bitmap, character are looked up in colors for the 
+           :param [string] image: the textual bitmap, character are looked up in colors for the
                   corresponding pixel color, anything not in the map is off
            :param {char -> (int, int, int)} colors: a map of characters in the image data to colors to use
         """
@@ -218,7 +208,6 @@ class DotstarFeatherwing:
                 else:
                     self.display[index] = (0, 0, 0)
         self.display.show()
-                            
 
     def display_animation(self, animation, colors, count=1, delay=0.1):
         """Display a multi-colored animation.
@@ -237,8 +226,3 @@ class DotstarFeatherwing:
                 first_frame = False
                 self.display_colored_image(frame, colors)
             count = count - 1
-                    
-
-
-
-
